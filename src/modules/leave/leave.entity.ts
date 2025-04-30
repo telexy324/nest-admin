@@ -6,9 +6,12 @@ import { UserEntity } from '~/modules/user/user.entity'
 
 @Entity('leave')
 export class LeaveEntity extends CommonEntity {
-  @Column()
-  @ApiProperty({ description: 'todo' })
-  value: string
+  @Column({
+    type: 'decimal',
+    precision: 10, // 总位数（整数 + 小数）
+    scale: 2, // 小数位数
+  })
+  amount: string
 
   @Column({ type: 'tinyint', default: 1 })
   @ApiProperty({ description: 'status: 1:PENDING, 2:APPROVED, 3:REJECTED' })
@@ -55,18 +58,15 @@ export class LeaveBalanceEntity extends CommonEntity {
     precision: 10, // 总位数（整数 + 小数）
     scale: 2, // 小数位数
   })
-  total: string // ⚠️ 建议用 string 类型，避免 JS 浮点误差
-
-  @Column({
-    type: 'decimal',
-    precision: 10, // 总位数（整数 + 小数）
-    scale: 2, // 小数位数
-  })
-  used: string // ⚠️ 建议用 string 类型，避免 JS 浮点误差
+  amount: string // ⚠️ 建议用 string 类型，避免 JS 浮点误差
 
   @Column({ type: 'int', nullable: true, name: 'consume_time', default: 0 })
   @ApiProperty({ description: '任务耗时' })
   year: number
+
+  @Column({ type: 'tinyint', default: 1 })
+  @ApiProperty({ description: 'status: 1:REQUEST, 2:CANCEL' })
+  action: number
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
