@@ -14,7 +14,7 @@ export class LeaveEntity extends CommonEntity {
   amount: string
 
   @Column({ type: 'tinyint', default: 1 })
-  @ApiProperty({ description: 'status: 1:PENDING, 2:APPROVED, 3:REJECTED' })
+  @ApiProperty({ description: 'status: 1:PENDING, 2:APPROVED, 3:REJECTED, 4:CANCELLED' })
   status: number
 
   @Column({ type: 'tinyint', default: 1 })
@@ -61,7 +61,7 @@ export class LeaveBalanceEntity extends CommonEntity {
   amount: string // ⚠️ 建议用 string 类型，避免 JS 浮点误差
 
   @Column({ type: 'int', nullable: true, name: 'consume_time', default: 0 })
-  @ApiProperty({ description: '任务耗时' })
+  @ApiProperty({ description: '年度' })
   year: number
 
   @Column({ type: 'tinyint', default: 1 })
