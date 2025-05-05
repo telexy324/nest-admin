@@ -28,7 +28,7 @@ export class AuthController {
   @ApiOperation({ summary: '登录' })
   @ApiResult({ type: LoginToken })
   async login(@Body() dto: LoginDto, @Ip()ip: string, @Headers('user-agent')ua: string): Promise<LoginToken> {
-    await this.captchaService.checkImgCaptcha(dto.captchaId, dto.verifyCode)
+    // await this.captchaService.checkImgCaptcha(dto.captchaId, dto.verifyCode)
     const token = await this.authService.login(
       dto.username,
       dto.password,

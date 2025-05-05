@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 
-import { IsString, Matches, MaxLength, MinLength } from 'class-validator'
+import { IsOptional, IsString, Matches, MaxLength, MinLength } from 'class-validator'
 
 export class LoginDto {
   @ApiProperty({ description: '手机号/邮箱' })
@@ -15,14 +15,16 @@ export class LoginDto {
   password: string
 
   @ApiProperty({ description: '验证码标识' })
+  @IsOptional()
   @IsString()
-  captchaId: string
+  captchaId?: string
 
   @ApiProperty({ description: '用户输入的验证码' })
+  @IsOptional()
   @IsString()
   @MinLength(4)
   @MaxLength(4)
-  verifyCode: string
+  verifyCode?: string
 }
 
 export class RegisterDto {
