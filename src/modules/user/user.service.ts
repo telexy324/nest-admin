@@ -15,15 +15,16 @@ import { paginate } from '~/helper/paginate'
 import { Pagination } from '~/helper/paginate/pagination'
 import { AccountUpdateDto } from '~/modules/auth/dto/account.dto'
 import { RegisterDto } from '~/modules/auth/dto/auth.dto'
+import { RoleService } from '~/modules/system/role/role.service'
+
 import { QQService } from '~/shared/helper/qq.service'
 
 import { md5, randomValue } from '~/utils'
-
 import { AccessTokenEntity } from '../auth/entities/access-token.entity'
 import { DeptEntity } from '../system/dept/dept.entity'
 import { ParamConfigService } from '../system/param-config/param-config.service'
-import { RoleEntity } from '../system/role/role.entity'
 
+import { RoleEntity } from '../system/role/role.entity'
 import { UserStatus } from './constant'
 import { PasswordUpdateDto } from './dto/password.dto'
 import { UserDto, UserQueryDto, UserUpdateDto } from './dto/user.dto'
@@ -42,6 +43,7 @@ export class UserService {
     @InjectEntityManager() private entityManager: EntityManager,
     private readonly paramConfigService: ParamConfigService,
     private readonly qqService: QQService,
+    private readonly roleService: RoleService,
   ) {}
 
   async findUserById(id: number): Promise<UserEntity | undefined> {
@@ -79,8 +81,8 @@ export class UserService {
       throw new BusinessException(ErrorEnum.USER_NOT_FOUND)
 
     delete user?.psalt
-
-    return user
+    const isAdmin = await this.roleService.isAdminRoleByUser(user.id)
+    return { ...user, isAdmin }
   }
 
   /**
