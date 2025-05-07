@@ -6,7 +6,7 @@ import { ErrorEnum } from '~/constants/error-code.constant'
 import { paginate } from '~/helper/paginate'
 import { Pagination } from '~/helper/paginate/pagination'
 import { LeaveBalanceEntity, LeaveEntity } from '~/modules/leave/leave.entity'
-
+import { LeaveStats } from '~/modules/leave/leave.model'
 import {
   LeaveBalanceDto,
   LeaveBalanceUpdateDto,
@@ -79,6 +79,61 @@ export class LeaveService {
 
   async reject(id: number, dto: LeaveUpdateDto) {
     await this.leaveRepository.update(id, dto)
+  }
+
+  async stats(uid: number): Promise<LeaveStats> {
+    const rawResult = await this.leaveBalanceRepository
+      .createQueryBuilder('leave')
+      .select('leave.type', 'type')
+      .addSelect('SUM(CASE WHEN leave.amount >= 0 THEN leave.amount ELSE 0 END)', 'total_positive')
+      .addSelect('SUM(CASE WHEN leave.amount < 0 THEN leave.amount ELSE 0 END)', 'total_negative')
+      .where('leave.user_id = :userId', { uid }) // ✅ 只统计指定用户
+      .groupBy('leave.type')
+      .getRawMany<{
+      type: number
+      total_positive: string
+      total_negative: string
+    }>()
+
+    const stats = new LeaveStats()
+
+    // 初始化所有字段为 0
+    Object.assign(stats, {
+      totalCompensatoryLeaves: 0,
+      usedCompensatoryLeaves: 0,
+      totalAnnualLeaves: 0,
+      usedAnnualLeaves: 0,
+      totalSickLeaves: 0,
+      usedSickLeaves: 0,
+      totalPersonalLeaves: 0,
+      usedPersonalLeaves: 0,
+    })
+
+    for (const row of rawResult) {
+      const total = Number.parseFloat(row.total_positive || '0')
+      const used = Math.abs(Number.parseFloat(row.total_negative || '0'))
+
+      switch (row.type) {
+        case 1: // 调休
+          stats.totalCompensatoryLeaves = total
+          stats.usedCompensatoryLeaves = used
+          break
+        case 2: // 年假
+          stats.totalAnnualLeaves = total
+          stats.usedAnnualLeaves = used
+          break
+        case 3: // 病假
+          stats.totalSickLeaves = total
+          stats.usedSickLeaves = used
+          break
+        case 4: // 事假
+          stats.totalPersonalLeaves = total
+          stats.usedPersonalLeaves = used
+          break
+      }
+    }
+
+    return stats
   }
 
   async listBalance(user: IAuthUser, {
