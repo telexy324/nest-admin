@@ -87,7 +87,7 @@ export class LeaveService {
       .select('leave.type', 'type')
       .addSelect('SUM(CASE WHEN leave.amount >= 0 THEN leave.amount ELSE 0 END)', 'total_positive')
       .addSelect('SUM(CASE WHEN leave.amount < 0 THEN leave.amount ELSE 0 END)', 'total_negative')
-      .where('leave.user_id = :userId', { uid }) // ✅ 只统计指定用户
+      .where('leave.user_id = :userId', { userId: uid }) // ✅ 只统计指定用户
       .groupBy('leave.type')
       .getRawMany<{
       type: number

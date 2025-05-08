@@ -31,6 +31,7 @@ export const permissions = definePermission('leave', {
   READ: 'read',
   UPDATE: 'update',
   DELETE: 'delete',
+  RESTRICTED: 'restricted',
 } as const)
 
 @ApiTags('Business - Leave模块')
@@ -88,7 +89,7 @@ export class LeaveController {
 
   @Put(':id/approve')
   @ApiOperation({ summary: '批准Leave' })
-  @Perm(permissions.UPDATE)
+  @Perm(permissions.RESTRICTED)
   @Resource(LeaveEntity)
   async approve(@IdParam() id: number, @Body()dto: LeaveUpdateDto): Promise<void> {
     dto.status = LeaveStatus.APPROVED
@@ -97,7 +98,7 @@ export class LeaveController {
 
   @Put(':id/reject')
   @ApiOperation({ summary: '驳回Leave' })
-  @Perm(permissions.UPDATE)
+  @Perm(permissions.RESTRICTED)
   @Resource(LeaveEntity)
   async reject(@IdParam() id: number, @Body()dto: LeaveUpdateDto): Promise<void> {
     dto.status = LeaveStatus.REJECTED
