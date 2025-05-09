@@ -26,10 +26,20 @@ export class LeaveService {
   ) {}
 
   async list({
+    type,
+    status,
+    startDate,
+    endDate,
     page,
     pageSize,
   }: LeaveQueryDto): Promise<Pagination<LeaveEntity>> {
-    return paginate(this.leaveRepository, { page, pageSize })
+    const queryBuilder = this.leaveRepository.createQueryBuilder('leave').orderBy({ updated_at: 'DESC' }).where({
+      ...(type && { type }),
+      ...(status && { status }),
+      ...(startDate && { startDate }),
+      ...(endDate && { endDate }),
+    })
+    return paginate(queryBuilder, { page, pageSize })
   }
 
   async detail(id: number): Promise<LeaveEntity> {
@@ -40,8 +50,13 @@ export class LeaveService {
     return item
   }
 
-  async create(dto: LeaveDto) {
-    await this.leaveRepository.save(dto)
+  async create(uid: number, dto: LeaveDto) {
+    await this.leaveRepository.save({
+      ...dto,
+      user: {
+        id: uid,
+      },
+    })
   }
 
   async update(id: number, dto: LeaveUpdateDto) {

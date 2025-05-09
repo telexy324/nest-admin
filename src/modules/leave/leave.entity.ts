@@ -18,7 +18,7 @@ export class LeaveEntity extends CommonEntity {
   status: number
 
   @Column({ type: 'tinyint', default: 1 })
-  @ApiProperty({ description: 'status: 1:COMPENSATE, 2:ANNUAL, 3:SICK, 4:PERSONAL, 5:OTHER' })
+  @ApiProperty({ description: 'type: 1:COMPENSATE, 2:ANNUAL, 3:SICK, 4:PERSONAL, 5:OTHER' })
   type: number
 
   @Column({ name: 'start_date', type: 'datetime', nullable: true })

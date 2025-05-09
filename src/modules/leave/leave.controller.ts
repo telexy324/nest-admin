@@ -42,7 +42,7 @@ export class LeaveController {
 
   @Get()
   @ApiOperation({ summary: '获取Leave列表' })
-  @ApiResult({ type: [LeaveEntity] })
+  @ApiResult({ type: [LeaveEntity], isPage: true })
   @Perm(permissions.LIST)
   async list(@Query() dto: LeaveQueryDto): Promise<Pagination<LeaveEntity>> {
     return this.leaveService.list(dto)
@@ -59,8 +59,8 @@ export class LeaveController {
   @Post()
   @ApiOperation({ summary: '创建Leave' })
   @Perm(permissions.CREATE)
-  async create(@Body() dto: LeaveDto): Promise<void> {
-    await this.leaveService.create(dto)
+  async create(@AuthUser() user: IAuthUser, @Body() dto: LeaveDto): Promise<void> {
+    await this.leaveService.create(user.uid, dto)
   }
 
   @Put(':id')
