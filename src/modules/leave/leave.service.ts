@@ -43,7 +43,16 @@ export class LeaveService {
   }
 
   async detail(id: number): Promise<LeaveEntity> {
-    const item = await this.leaveRepository.findOneBy({ id })
+    const item = await this.leaveRepository.findOne({
+      where: { id },
+      relations: ['user', 'approver'], // 👈 手动指定要加载的关联字段
+    })
+    // const item = await this.leaveRepository
+    //   .createQueryBuilder('leave')
+    //   .leftJoinAndSelect('leave.user', 'user')
+    //   .leftJoinAndSelect('leave.approver', 'approver')
+    //   .where('leave.id = :id', { id })
+    //   .getOne()
     if (!item)
       throw new NotFoundException('未找到该记录')
 
@@ -80,20 +89,32 @@ export class LeaveService {
     await this.leaveRepository.update(id, dto)
   }
 
-  async approve(id: number, dto: LeaveUpdateDto) {
-    await this.leaveRepository.update(id, dto)
+  async approve(uid: number, id: number, dto: LeaveUpdateDto) {
+    const withAdmin = {
+      ...dto,
+      approver: {
+        id: uid,
+      },
+    }
+    await this.leaveRepository.update(id, withAdmin)
     const item = await this.detail(id)
-    const balance = this.leaveBalanceRepository.insert({
+    await this.leaveBalanceRepository.insert({
       type: dto.type,
-      amount: `-${dto.amount}`,
+      amount: `-${item.amount}`,
       user: {
         id: item.user.id,
       },
     })
   }
 
-  async reject(id: number, dto: LeaveUpdateDto) {
-    await this.leaveRepository.update(id, dto)
+  async reject(uid: number, id: number, dto: LeaveUpdateDto) {
+    const withAdmin = {
+      ...dto,
+      approver: {
+        id: uid,
+      },
+    }
+    await this.leaveRepository.update(id, withAdmin)
   }
 
   async stats(uid: number): Promise<LeaveStats> {

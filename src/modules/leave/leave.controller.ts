@@ -91,18 +91,18 @@ export class LeaveController {
   @ApiOperation({ summary: '批准Leave' })
   @Perm(permissions.RESTRICTED)
   @Resource(LeaveEntity)
-  async approve(@IdParam() id: number, @Body()dto: LeaveUpdateDto): Promise<void> {
+  async approve(@AuthUser() user: IAuthUser, @IdParam() id: number, @Body()dto: LeaveUpdateDto): Promise<void> {
     dto.status = LeaveStatus.APPROVED
-    await this.leaveService.approve(id, dto)
+    await this.leaveService.approve(user.uid, id, dto)
   }
 
   @Put(':id/reject')
   @ApiOperation({ summary: '驳回Leave' })
   @Perm(permissions.RESTRICTED)
   @Resource(LeaveEntity)
-  async reject(@IdParam() id: number, @Body()dto: LeaveUpdateDto): Promise<void> {
+  async reject(@AuthUser() user: IAuthUser, @IdParam() id: number, @Body()dto: LeaveUpdateDto): Promise<void> {
     dto.status = LeaveStatus.REJECTED
-    await this.leaveService.reject(id, dto)
+    await this.leaveService.reject(user.uid, id, dto)
   }
 
   @Get('stats')
