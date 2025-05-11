@@ -33,12 +33,21 @@ export class LeaveService {
     page,
     pageSize,
   }: LeaveQueryDto): Promise<Pagination<LeaveEntity>> {
-    const queryBuilder = this.leaveRepository.createQueryBuilder('leave').orderBy({ updated_at: 'DESC' }).where({
-      ...(type && { type }),
-      ...(status && { status }),
-      ...(startDate && { startDate }),
-      ...(endDate && { endDate }),
-    })
+    const queryBuilder = this.leaveRepository
+      .createQueryBuilder('leave')
+      .orderBy({ updated_at: 'DESC' })
+    if (type) {
+      queryBuilder.andWhere('leave.type = :type', { type })
+    }
+    if (status) {
+      queryBuilder.andWhere('leave.status = :status', { status })
+    }
+    if (startDate) {
+      queryBuilder.andWhere('leave.startDate >= :startDate', { startDate })
+    }
+    if (endDate) {
+      queryBuilder.andWhere('leave.endDate <= :endDate', { endDate })
+    }
     return paginate(queryBuilder, { page, pageSize })
   }
 
