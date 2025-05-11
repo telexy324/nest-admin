@@ -45,6 +45,9 @@ export class LeaveEntity extends CommonEntity {
 
   @Column({ nullable: true })
   comment: string
+
+  @Column({ name: 'done_at', type: 'datetime', nullable: true })
+  doneAt: Date
 }
 
 @Entity('leave_balance')

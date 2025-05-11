@@ -86,7 +86,11 @@ export class LeaveService {
     if (item.status !== LeaveStatus.PENDING) {
       throw new BusinessException(ErrorEnum.LEAVE_CANNOT_CANCEL)
     }
-    await this.leaveRepository.update(id, dto)
+    const withAdmin = {
+      ...dto,
+      doneAt: new Date(),
+    }
+    await this.leaveRepository.update(id, withAdmin)
   }
 
   async approve(uid: number, id: number, dto: LeaveUpdateDto) {
@@ -95,6 +99,7 @@ export class LeaveService {
       approver: {
         id: uid,
       },
+      doneAt: new Date(),
     }
     await this.leaveRepository.update(id, withAdmin)
     const item = await this.detail(id)
@@ -113,6 +118,7 @@ export class LeaveService {
       approver: {
         id: uid,
       },
+      doneAt: new Date(),
     }
     await this.leaveRepository.update(id, withAdmin)
   }
