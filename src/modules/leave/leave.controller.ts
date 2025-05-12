@@ -22,7 +22,15 @@ import { ResourceGuard } from '~/modules/auth/guards/resource.guard'
 import { LeaveBalanceEntity, LeaveEntity } from '~/modules/leave/leave.entity'
 
 import { LeaveStats } from '~/modules/leave/leave.model'
-import { LeaveBalanceQueryDto, LeaveDto, LeaveQueryDto, LeaveStatus, LeaveUpdateDto } from './leave.dto'
+import {
+  LeaveBalanceDto,
+  LeaveBalanceQueryDto,
+  LeaveBalanceUpdateDto,
+  LeaveDto,
+  LeaveQueryDto,
+  LeaveStatus,
+  LeaveUpdateDto,
+} from './leave.dto'
 import { LeaveService } from './leave.service'
 
 export const permissions = definePermission('leave', {
@@ -133,7 +141,7 @@ export class LeaveController {
   @Post('balance')
   @ApiOperation({ summary: '创建LeaveBalance' })
   @Perm(permissions.CREATE)
-  async createBalance(@Body() dto: LeaveDto): Promise<void> {
+  async createBalance(@Body() dto: LeaveBalanceDto): Promise<void> {
     await this.leaveService.createBalance(dto)
   }
 
@@ -141,7 +149,7 @@ export class LeaveController {
   @ApiOperation({ summary: '更新LeaveBalance' })
   @Perm(permissions.UPDATE)
   @Resource(LeaveBalanceEntity)
-  async updateBalance(@IdParam() id: number, @Body()dto: LeaveUpdateDto): Promise<void> {
+  async updateBalance(@IdParam() id: number, @Body()dto: LeaveBalanceUpdateDto): Promise<void> {
     await this.leaveService.updateBalance(id, dto)
   }
 

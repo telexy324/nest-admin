@@ -1,5 +1,7 @@
 import { ApiProperty, PartialType } from '@nestjs/swagger'
+import { Type } from 'class-transformer'
 import {
+  IsArray,
   IsDecimal,
   IsIn,
   IsOptional,
@@ -71,9 +73,11 @@ export class LeaveDto {
   reason: string
 
   @ApiProperty({ description: '请假佐证' })
-  @IsString()
   @IsOptional()
-  proof?: string
+  @IsArray()
+  @Type(() => String)
+  @IsString({ each: true })
+  proof?: string[] | null
 
   @ApiProperty({ description: '评论' })
   @IsString()

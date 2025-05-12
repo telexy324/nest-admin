@@ -310,6 +310,13 @@ INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`,
 INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (125, 116, NULL, '复制文件或文件夹', 'netdisk:manage:copy', 2, '', 255, NULL, 0, 1, 1, '2024-02-10 08:44:44.725391', '2024-02-28 22:05:52.102649', 0, 1, NULL);
 INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (126, 116, NULL, '剪切文件或文件夹', 'netdisk:manage:cut', 2, '', 255, NULL, 0, 1, 1, '2024-02-10 08:45:21.660511', '2024-02-28 22:05:52.102649', 0, 1, NULL);
 INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (127, 115, 'overview', '网盘概览', 'netdisk:overview:desc', 1, '', 254, 'netdisk/overview', 0, 1, 1, '2024-02-10 09:32:56.981190', '2024-02-10 09:34:18.000000', 0, 1, NULL);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (128, null, '/leaves', '请假管理', null, 0, 'ant-design:coffee-outlined', 255, null, 1, 1, 1, '2025-05-08 01:54:34.234456', '2025-05-08 01:54:34.234456', 0, 1, null);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (129, 128, null, '新增', 'leave:create', 2, '', 1, null, 1, 1, 1, '2025-05-08 02:55:32.337087', '2025-05-08 02:55:32.337087', 0, 1, null);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (130, 128, null, '更新', 'leave:update', 2, '', 2, null, 1, 1, 1, '2025-05-08 02:55:55.684537', '2025-05-08 02:55:55.684537', 0, 1, null);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (131, 128, null, '删除', 'leave:delete', 2, '', 3, null, 1, 1, 1, '2025-05-08 02:56:14.671063', '2025-05-08 02:56:14.671063', 0, 1, null);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (132, 128, null, '查询', 'leave:read', 2, '', 4, null, 1, 1, 1, '2025-05-08 02:56:37.909344', '2025-05-08 02:56:37.909344', 0, 1, null);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (133, 128, null, '列表', 'leave:list', 2, '', 5, null, 1, 1, 1, '2025-05-08 02:57:56.043704', '2025-05-08 02:57:56.043704', 0, 1, null);
+INSERT INTO `sys_menu` (`id`, `parent_id`, `path`, `name`, `permission`, `type`, `icon`, `order_no`, `component`, `keep_alive`, `show`, `status`, `created_at`, `updated_at`, `is_ext`, `ext_open_mode`, `active_menu`) VALUES (134, 128, null, '审批', 'leave:restricted', 2, '', 6, null, 1, 1, 1, '2025-05-08 03:06:13.310064', '2025-05-08 03:06:13.310064', 0, 1, null);
 COMMIT;
 
 -- ----------------------------
@@ -523,6 +530,19 @@ INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (9, 87);
 INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (9, 88);
 INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (9, 89);
 INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (9, 92);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (1, 128);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (1, 129);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (1, 130);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (1, 131);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (1, 132);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (1, 133);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (1, 134);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (2, 128);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (2, 129);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (2, 130);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (2, 131);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (2, 132);
+INSERT INTO `sys_role_menus` (`role_id`, `menu_id`) VALUES (2, 133);
 COMMIT;
 
 -- ----------------------------

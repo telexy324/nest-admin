@@ -32,8 +32,8 @@ export class LeaveEntity extends CommonEntity {
   @Column()
   reason: string
 
-  @Column({ nullable: true })
-  proof: string
+  @Column('simple-json', { nullable: true })
+  proof: string[] | null
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
