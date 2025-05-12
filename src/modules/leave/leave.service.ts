@@ -42,11 +42,13 @@ export class LeaveService {
     if (status) {
       queryBuilder.andWhere('leave.status = :status', { status })
     }
-    if (startDate) {
-      queryBuilder.andWhere('leave.startDate >= :startDate', { startDate })
-    }
-    if (endDate) {
-      queryBuilder.andWhere('leave.endDate <= :endDate', { endDate })
+    if (startDate && endDate) {
+      queryBuilder.andWhere(`
+    NOT (
+      leave.endDate < :startDate OR
+      leave.startDate > :endDate
+    )
+  `, { startDate, endDate })
     }
     return paginate(queryBuilder, { page, pageSize })
   }
