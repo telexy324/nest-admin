@@ -84,6 +84,7 @@ export class LeaveController {
   @Perm(permissions.UPDATE)
   @Resource(LeaveEntity)
   async cancel(@AuthUser() user: IAuthUser, @IdParam() id: number, @Body()dto: LeaveUpdateDto): Promise<void> {
+    dto.status = LeaveStatus.CANCELED
     await this.leaveService.cancel(id, dto, user)
   }
 
