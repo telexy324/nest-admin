@@ -39,10 +39,42 @@ export class UploadController {
     //   console.log(part.file)
 
     try {
-      const path = await this.uploadService.saveFile(file, user.uid)
+      const { path } = await this.uploadService.saveFile(file, user.uid)
 
       return {
         filename: path,
+      }
+    }
+    catch (error) {
+      console.log(error)
+      throw new BadRequestException('上传失败')
+    }
+  }
+
+  @Post('mobile')
+  @Perm(permissions.UPLOAD)
+  @ApiOperation({ summary: '移动端上传' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    type: FileUploadDto,
+  })
+  async uploadMobile(@Req() req: FastifyRequest, @AuthUser() user: IAuthUser) {
+    if (!req.isMultipart())
+      throw new BadRequestException('Request is not multipart')
+
+    const file = await req.file()
+
+    // https://github.com/fastify/fastify-multipart
+    // const parts = req.files()
+    // for await (const part of parts)
+    //   console.log(part.file)
+
+    try {
+      const { path, name } = await this.uploadService.saveFile(file, user.uid)
+
+      return {
+        filename: path,
+        originName: name,
       }
     }
     catch (error) {

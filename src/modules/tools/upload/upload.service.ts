@@ -26,7 +26,10 @@ export class UploadService {
   /**
    * 保存文件上传记录
    */
-  async saveFile(file: MultipartFile, userId: number): Promise<string> {
+  async saveFile(file: MultipartFile, userId: number): Promise<{
+    path: string
+    name: string
+  }> {
     if (isNil(file))
       throw new NotFoundException('Have not any file to upload!')
 
@@ -50,6 +53,9 @@ export class UploadService {
       userId,
     })
 
-    return path
+    return {
+      path,
+      name,
+    }
   }
 }
