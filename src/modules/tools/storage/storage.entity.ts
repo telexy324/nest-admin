@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Column, Entity } from 'typeorm'
+import { Column, Entity, ManyToOne } from 'typeorm'
 
 import { CommonEntity } from '~/common/entity/common.entity'
+import { LeaveEntity } from '~/modules/leave/leave.entity'
 
 @Entity({ name: 'tool_storage' })
 export class Storage extends CommonEntity {
@@ -37,4 +38,10 @@ export class Storage extends CommonEntity {
   @Column({ nullable: true, name: 'user_id' })
   @ApiProperty({ description: '用户ID' })
   userId: number
+
+  @ManyToOne(() => LeaveEntity, leave => leave.proof, {
+    nullable: true, // ✅ 可以为空（即不属于任何用户）
+    onDelete: 'SET NULL', // ✅ 用户被删除时，图片保留但断开关联
+  })
+  leave: LeaveEntity | null
 }

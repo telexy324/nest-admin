@@ -4,6 +4,7 @@ import {
   IsArray,
   IsDecimal,
   IsIn,
+  IsInt,
   IsOptional,
   IsString,
   Matches,
@@ -74,10 +75,10 @@ export class LeaveDto {
 
   @ApiProperty({ description: '请假佐证' })
   @IsOptional()
-  @IsArray()
-  @Type(() => String)
-  @IsString({ each: true })
-  proof?: string[] | null
+  @IsArray({ message: '佐证文件 ID 应为数组' })
+  @Type(() => Number) // 转换数组内的类型
+  @IsInt({ each: true, message: '请假佐证文件 ID' })
+  proof?: number[]
 
   @ApiProperty({ description: '评论' })
   @IsString()

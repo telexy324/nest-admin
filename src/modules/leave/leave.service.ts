@@ -1,12 +1,14 @@
-import { Injectable, NotFoundException } from '@nestjs/common'
+import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
-import { Repository } from 'typeorm'
+import { In, Repository } from 'typeorm'
 import { BusinessException } from '~/common/exceptions/biz.exception'
 import { ErrorEnum } from '~/constants/error-code.constant'
 import { paginate } from '~/helper/paginate'
 import { Pagination } from '~/helper/paginate/pagination'
 import { LeaveBalanceEntity, LeaveEntity } from '~/modules/leave/leave.entity'
 import { LeaveStats } from '~/modules/leave/leave.model'
+import { Storage } from '~/modules/tools/storage/storage.entity'
+import { UserEntity } from '~/modules/user/user.entity'
 import {
   LeaveBalanceDto,
   LeaveBalanceUpdateDto,
@@ -23,6 +25,10 @@ export class LeaveService {
     private leaveRepository: Repository<LeaveEntity>,
     @InjectRepository(LeaveBalanceEntity)
     private leaveBalanceRepository: Repository<LeaveBalanceEntity>,
+    @InjectRepository(LeaveBalanceEntity)
+    private storageRepository: Repository<Storage>,
+    @InjectRepository(UserEntity)
+    private userRepository: Repository<UserEntity>,
   ) {}
 
   async list({
@@ -71,16 +77,64 @@ export class LeaveService {
   }
 
   async create(uid: number, dto: LeaveDto) {
-    await this.leaveRepository.save({
-      ...dto,
-      user: {
-        id: uid,
-      },
+    const user = await this.userRepository.findOneByOrFail({ id: uid })
+
+    const leave = this.leaveRepository.create({
+      amount: dto.amount,
+      type: dto.type,
+      startDate: dto.startDate,
+      endDate: dto.endDate,
+      reason: dto.reason,
+      comment: dto.comment,
+      status: dto.status,
+      user,
     })
+
+    // 如果 proof 传了，就查询 Storage 实体再绑定
+    if (dto.proof?.length) {
+      const proofs = await this.storageRepository.findBy({ id: In(dto.proof) })
+
+      if (proofs.length !== dto.proof.length) {
+        throw new BadRequestException('部分 proof ID 不存在')
+      }
+
+      leave.proof = proofs
+    }
+
+    await this.leaveRepository.save(leave)
   }
 
   async update(id: number, dto: LeaveUpdateDto) {
-    await this.leaveRepository.update(id, dto)
+    const { proof, ...rest } = dto
+
+    // 第一步：更新 leave 的主字段（不包括 proof）
+    await this.leaveRepository.update(id, rest)
+
+    // 第二步：如果传了 proof，则更新 Storage 的 leave 关联
+    if (proof?.length) {
+      // 查询所有 Storage 实体
+      const proofs = await this.storageRepository.findBy({ id: In(proof) })
+
+      if (proofs.length !== proof.length) {
+        throw new BadRequestException('部分 proof ID 不存在')
+      }
+
+      // 清除旧的绑定（避免残留旧的 proof）
+      await this.storageRepository
+        .createQueryBuilder()
+        .update()
+        .set({ leave: null })
+        .where('leaveId = :id', { id })
+        .execute()
+
+      // 绑定新的 proof 到当前请假单
+      await this.storageRepository
+        .createQueryBuilder()
+        .update()
+        .set({ leave: { id } })
+        .whereInIds(proof)
+        .execute()
+    }
   }
 
   async delete(id: number) {
@@ -97,16 +151,18 @@ export class LeaveService {
     if (item.status !== LeaveStatus.PENDING) {
       throw new BusinessException(ErrorEnum.LEAVE_CANNOT_CANCEL)
     }
+    const { proof, ...rest } = dto
     const withAdmin = {
-      ...dto,
+      ...rest,
       doneAt: new Date(),
     }
     await this.leaveRepository.update(id, withAdmin)
   }
 
   async approve(uid: number, id: number, dto: LeaveUpdateDto) {
+    const { proof, ...rest } = dto
     const withAdmin = {
-      ...dto,
+      ...rest,
       approver: {
         id: uid,
       },
@@ -124,8 +180,9 @@ export class LeaveService {
   }
 
   async reject(uid: number, id: number, dto: LeaveUpdateDto) {
+    const { proof, ...rest } = dto
     const withAdmin = {
-      ...dto,
+      ...rest,
       approver: {
         id: uid,
       },

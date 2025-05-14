@@ -1,7 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger'
-import { Column, Entity, JoinColumn, ManyToOne, Relation } from 'typeorm'
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, Relation } from 'typeorm'
 
 import { CommonEntity } from '~/common/entity/common.entity'
+import { Storage } from '~/modules/tools/storage/storage.entity'
 import { UserEntity } from '~/modules/user/user.entity'
 
 @Entity('leave')
@@ -32,8 +33,8 @@ export class LeaveEntity extends CommonEntity {
   @Column()
   reason: string
 
-  @Column('simple-json', { nullable: true })
-  proof: string[] | null
+  @OneToMany(() => Storage, storage => storage.leave)
+  proof: Storage[]
 
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'user_id' })
