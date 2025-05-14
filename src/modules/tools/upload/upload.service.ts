@@ -7,14 +7,7 @@ import { Repository } from 'typeorm'
 
 import { Storage } from '~/modules/tools/storage/storage.entity'
 
-import {
-  fileRename,
-  getExtname,
-  getFilePath,
-  getFileType,
-  getSize,
-  saveLocalFile,
-} from '~/utils/file.util'
+import { fileRename, getExtname, getFilePath, getFileType, getSize, saveLocalFile } from '~/utils/file.util'
 
 @Injectable()
 export class UploadService {
@@ -26,10 +19,7 @@ export class UploadService {
   /**
    * 保存文件上传记录
    */
-  async saveFile(file: MultipartFile, userId: number): Promise<{
-    path: string
-    name: string
-  }> {
+  async saveFile(file: MultipartFile, userId: number): Promise<Storage> {
     if (isNil(file))
       throw new NotFoundException('Have not any file to upload!')
 
@@ -43,7 +33,7 @@ export class UploadService {
 
     saveLocalFile(await file.toBuffer(), name, currentDate, type)
 
-    await this.storageRepository.save({
+    return await this.storageRepository.save({
       name,
       fileName,
       extName,
@@ -52,10 +42,5 @@ export class UploadService {
       size,
       userId,
     })
-
-    return {
-      path,
-      name,
-    }
   }
 }

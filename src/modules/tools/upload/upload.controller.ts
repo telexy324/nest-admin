@@ -70,12 +70,7 @@ export class UploadController {
     //   console.log(part.file)
 
     try {
-      const { path, name } = await this.uploadService.saveFile(file, user.uid)
-
-      return {
-        filename: path,
-        originName: name,
-      }
+      return await this.uploadService.saveFile(file, user.uid)
     }
     catch (error) {
       console.log(error)
