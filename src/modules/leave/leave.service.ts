@@ -62,7 +62,7 @@ export class LeaveService {
   async detail(id: number): Promise<LeaveEntity> {
     const item = await this.leaveRepository.findOne({
       where: { id },
-      relations: ['user', 'approver'], // 👈 手动指定要加载的关联字段
+      relations: ['user', 'approver', 'proof'], // 👈 手动指定要加载的关联字段
     })
     // const item = await this.leaveRepository
     //   .createQueryBuilder('leave')
