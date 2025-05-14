@@ -25,7 +25,7 @@ export class LeaveService {
     private leaveRepository: Repository<LeaveEntity>,
     @InjectRepository(LeaveBalanceEntity)
     private leaveBalanceRepository: Repository<LeaveBalanceEntity>,
-    @InjectRepository(LeaveBalanceEntity)
+    @InjectRepository(Storage)
     private storageRepository: Repository<Storage>,
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
