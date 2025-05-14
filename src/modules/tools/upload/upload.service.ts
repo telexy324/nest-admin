@@ -43,4 +43,14 @@ export class UploadService {
       userId,
     })
   }
+
+  async delete(id: number) {
+    const item = await this.storageRepository.findOne({
+      where: { id },
+    })
+    if (!item)
+      throw new NotFoundException('未找到该记录')
+
+    await this.storageRepository.remove(item)
+  }
 }

@@ -1,12 +1,12 @@
-import { BadRequestException, Controller, Post, Req } from '@nestjs/common'
+import { BadRequestException, Controller, Delete, Post, Req } from '@nestjs/common'
 import { ApiBody, ApiConsumes, ApiOperation, ApiTags } from '@nestjs/swagger'
 import { FastifyRequest } from 'fastify'
-
+import { IdParam } from '~/common/decorators/id-param.decorator'
 import { ApiSecurityAuth } from '~/common/decorators/swagger.decorator'
 import { AuthUser } from '~/modules/auth/decorators/auth-user.decorator'
-
 import { definePermission, Perm } from '~/modules/auth/decorators/permission.decorator'
-
+import { Resource } from '~/modules/auth/decorators/resource.decorator'
+import { Storage } from '~/modules/tools/storage/storage.entity'
 import { FileUploadDto } from './upload.dto'
 import { UploadService } from './upload.service'
 
@@ -76,5 +76,13 @@ export class UploadController {
       console.log(error)
       throw new BadRequestException('上传失败')
     }
+  }
+
+  @Delete(':id')
+  @ApiOperation({ summary: '删除Upload' })
+  @Perm(permissions.UPLOAD)
+  @Resource(Storage)
+  async delete(@IdParam() id: number): Promise<void> {
+    await this.uploadService.delete(id)
   }
 }
