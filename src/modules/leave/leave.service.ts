@@ -6,7 +6,7 @@ import { ErrorEnum } from '~/constants/error-code.constant'
 import { paginate } from '~/helper/paginate'
 import { Pagination } from '~/helper/paginate/pagination'
 import { LeaveBalanceEntity, LeaveEntity } from '~/modules/leave/leave.entity'
-import { LeaveStats } from '~/modules/leave/leave.model'
+import { LeaveApprovalStats, LeaveStats } from '~/modules/leave/leave.model'
 import { Storage } from '~/modules/tools/storage/storage.entity'
 import { UserEntity } from '~/modules/user/user.entity'
 import {
@@ -243,6 +243,19 @@ export class LeaveService {
       }
     }
 
+    return stats
+  }
+
+  async approveStats(uid: number): Promise<LeaveApprovalStats> {
+    const stats = new LeaveApprovalStats()
+
+    // 初始化所有字段为 0
+    Object.assign(stats, {
+      totalUnApproveLeaves: 0,
+      totalApprovedLeaves: 0,
+      totalApprovalLeaves: 0,
+      totalRejectLeaves: 0,
+    })
     return stats
   }
 

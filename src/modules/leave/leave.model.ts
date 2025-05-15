@@ -25,3 +25,17 @@ export class LeaveStats {
   @ApiProperty({ description: '事假已使用天数' })
   usedPersonalLeaves: number
 }
+
+export class LeaveApprovalStats {
+  @ApiProperty({ description: '未审批请求' })
+  totalUnApproveLeaves: number
+
+  @ApiProperty({ description: '已审批请求' })
+  totalApprovedLeaves: number
+
+  @ApiProperty({ description: '已通过请求' })
+  totalApprovalLeaves: number
+
+  @ApiProperty({ description: '已拒绝请求' })
+  totalRejectLeaves: number
+}

@@ -21,7 +21,7 @@ import { Resource } from '~/modules/auth/decorators/resource.decorator'
 import { ResourceGuard } from '~/modules/auth/guards/resource.guard'
 import { LeaveBalanceEntity, LeaveEntity } from '~/modules/leave/leave.entity'
 
-import { LeaveStats } from '~/modules/leave/leave.model'
+import { LeaveApprovalStats, LeaveStats } from '~/modules/leave/leave.model'
 import {
   LeaveBalanceDto,
   LeaveBalanceQueryDto,
@@ -120,6 +120,14 @@ export class LeaveController {
   @Perm(permissions.READ)
   async stats(@AuthUser() user: IAuthUser): Promise<LeaveStats> {
     return this.leaveService.stats(user.uid)
+  }
+
+  @Get('approvals')
+  @ApiOperation({ summary: '获取Leave审批统计' })
+  @ApiResult({ type: LeaveStats })
+  @Perm(permissions.READ)
+  async approvals(@AuthUser() user: IAuthUser): Promise<LeaveApprovalStats> {
+    return this.leaveService.approveStats(user.uid)
   }
 
   @Get('balance')
