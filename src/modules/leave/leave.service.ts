@@ -247,14 +247,35 @@ export class LeaveService {
   }
 
   async approveStats(uid: number): Promise<LeaveApprovalStats> {
+    const totalUnApproveLeaves = await this.leaveRepository
+      .createQueryBuilder('leave')
+      .where('leave.status = :status', { status: LeaveStatus.PENDING })
+      .getCount()
+    // const totalApprovedLeaves = await this.leaveRepository
+    //   .createQueryBuilder('leave')
+    //   .andWhere('leave.status IN (:...statuses)', {
+    //     statuses: [LeaveStatus.APPROVED, LeaveStatus.REJECTED],
+    //   })
+    //   .andWhere('leave.approver_id = :approver_id', { approver_id: uid })
+    //   .getCount()
+    const totalApprovalLeaves = await this.leaveRepository
+      .createQueryBuilder('leave')
+      .andWhere('leave.status = :status', { status: LeaveStatus.APPROVED })
+      .andWhere('leave.approver_id = :approver_id', { approver_id: uid })
+      .getCount()
+    const totalRejectLeaves = await this.leaveRepository
+      .createQueryBuilder('leave')
+      .andWhere('leave.status = :status', { status: LeaveStatus.REJECTED })
+      .andWhere('leave.approver_id = :approver_id', { approver_id: uid })
+      .getCount()
     const stats = new LeaveApprovalStats()
 
     // 初始化所有字段为 0
     Object.assign(stats, {
-      totalUnApproveLeaves: 0,
-      totalApprovedLeaves: 0,
-      totalApprovalLeaves: 0,
-      totalRejectLeaves: 0,
+      totalUnApproveLeaves,
+      totalApprovedLeaves: totalApprovalLeaves + totalRejectLeaves,
+      totalApprovalLeaves,
+      totalRejectLeaves,
     })
     return stats
   }
