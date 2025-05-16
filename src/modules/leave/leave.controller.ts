@@ -124,7 +124,7 @@ export class LeaveController {
 
   @Get('approvals')
   @ApiOperation({ summary: '获取Leave审批统计' })
-  @ApiResult({ type: LeaveStats })
+  @ApiResult({ type: LeaveApprovalStats })
   @Perm(permissions.READ)
   async approvals(@AuthUser() user: IAuthUser): Promise<LeaveApprovalStats> {
     return this.leaveService.approveStats(user.uid)
